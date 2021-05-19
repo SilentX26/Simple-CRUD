@@ -1,6 +1,5 @@
 # Simple CRUD
-Library yang berfungsi untuk mempermudah pengembangan aplikasi (berbasis web), terutama yang masih menggunakan php native.
-Library ini dibuat guna mempermudah terutama untuk anda yang masih menggunakan php native untuk mengembangkan projectnya, dan males ngetik query SQL (sElEct fROm) :)
+Library yang berfungsi untuk mempermudah anda dalam melakukan manipulasi data pada database project anda, terutama jika anda masih menggunakan php native.
 
 ## Apa saja fungsi yang tersedia?
   - Create: mendukung untuk melakukan insert data, baik itu satu data maupun multi data.

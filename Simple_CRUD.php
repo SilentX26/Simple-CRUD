@@ -212,7 +212,7 @@ class Simple_CRUD
         $query .= " FROM {$table}";
         $query .= $this->_fetch_query($param);
 
-        $exec_query = $this->db->query($query);
+        $exec_query = $this->query($query);
         return $this->_fetch_result($exec_query, $return, $is_indexed);
     } 
 

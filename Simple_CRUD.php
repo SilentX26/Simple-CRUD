@@ -145,12 +145,11 @@ class Simple_CRUD
             $result .= " ORDER BY {$param['order_by']['column']} {$type}";
         }
 
-        if(isset($param['limit'])) {
-            $offset = (isset($param['limit']['offset']))
-                ? ", {$param['limit']['offset']}"
-                : '';
-            $result .= " LIMIT {$param['limit']['limit']} {$offset}";
-        }
+        if(isset($param['limit']))
+            $result .= " LIMIT {$param['limit']}";
+        
+        if(isset($param['offset']))
+            $result .= " OFFSET {$param['offset']}";
 
         return $result;
     }
@@ -202,15 +201,24 @@ class Simple_CRUD
         # Fungsi publik yang berfungsi untuk mendapatkan/membaca data.
         # Parameter:
             - [table] => Nama tabel yang diinginkan
-            - [param] => Array parameter yang dapat diisi dengan select, join, order by, group by, dan limit.
-            - [return] => Return tipe yang diinginkan, dapat berupa object maupun array.
-            - [is_indexed] => Gunakan TRUE jika ingin mengambil lebih dari 1 data, perlu diingat, harap gunakan boolean (TRUE/FALSE), karena disini menggunakan pembanding yang akan membandingkan tipe data juga.
+            - [param] : 
+                - [select] => Nama field yang ingin diambil, defaulnya library ini akan mengambil seluruh data.
+                - [join] => Melakukan perintah join ke tabel lain, silahkan lihat di file sample untuk melihat struktur array pada perintah join
+                - [order_by] => Menyortir data yang diambil sesuai dengan field dan tipe sortir yang diberikan
+                - [group_by] => Melakukan grouping pada data yang diambil
+                - [limit] => Membatasi data yang akan diambil
+                - [offset] => mengambil data dari titik offset yang sudah diberikan
+                - [return] => Return tipe yang diinginkan, dapat berupa object maupun array.
+                - [is_indexed] => Gunakan TRUE jika ingin mengambil lebih dari 1 data, perlu diingat, harap gunakan boolean (TRUE/FALSE), karena disini menggunakan pembanding yang akan membandingkan tipe data juga.
     */
-    function get_rows($table, $param = [], $return = 'object', $is_indexed = FALSE)
+    function get_rows($table, $param = [])
     {
         $query = (isset($param['select'])) ? "SELECT {$param['select']}" : 'SELECT *';
         $query .= " FROM {$table}";
         $query .= $this->_fetch_query($param);
+
+        $return = (isset($param['return'])) ? $param['return'] : 'object';
+        $is_indexed = (isset($param['is_indexed'])) ? $param['is_indexed'] : FALSE;
 
         $exec_query = $this->query($query);
         return $this->_fetch_result($exec_query, $return, $is_indexed);
@@ -220,11 +228,15 @@ class Simple_CRUD
         # Fungsi publik yang berfungsi untuk menghitung data.
         # Parameter:
             - [table] => Nama tabel yang diinginkan
-            - [param] => Array parameter yang dapat diisi dengan join, order by, group by, dan limit.
-            - [index] => Primary key/index tabel yang digunakan untuk memilih data dari tabel, digunakannya metode ini agar query yang dijalankan tidak membebani server (semisal yang di select adalah seluruh data dari tabel).
+            - [param] :
+                - [join] => Melakukan perintah join ke tabel lain, silahkan lihat di file sample untuk melihat struktur array pada perintah join
+                - [order_by] => Menyortir data yang diambil sesuai dengan field dan tipe sortir yang diberikan
+                - [index] => Primary key/index tabel yang digunakan untuk memilih data dari tabel, digunakannya metode ini agar query yang dijalankan tidak membebani server (semisal yang di select adalah seluruh data dari tabel).
     */
-    function count_rows($table, $param = [], $index = 'id')
+    function count_rows($table, $param = [])
     {
+        $index = (isset($param['index'])) ? $param['index'] : 'id';
+        
         $query = "SELECT {$index} FROM {$table}";
         $query .= $this->_fetch_query($param);
 

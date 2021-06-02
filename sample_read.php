@@ -56,8 +56,10 @@ echo "<br><br>";
     # Select data pada 1 tabel
 */
 $sample_5 = $simple_crud->get_rows('users', [
-    'order_by' => ['type' => 'DESC', 'column' => 'id']
-], 'array', TRUE);
+    'order_by' => ['type' => 'DESC', 'column' => 'id'],
+    'return' => 'array',
+    'is_indexed' => TRUE
+]);
 var_dump($sample_5);
 echo "<br><br>";
 
@@ -65,7 +67,11 @@ echo "<br><br>";
     # Sample read data menggunakan fitur group by
     # Select data pada 1 tabel
 */
-$sample_6 = $simple_crud->get_rows('users', ['group_by' => 'id'], 'array', TRUE);
+$sample_6 = $simple_crud->get_rows('users', [
+    'group_by' => 'id',
+    'return' => 'array',
+    'is_indexed' => TRUE
+]);
 var_dump($sample_6);
 echo "<br><br>";
 
@@ -73,6 +79,10 @@ echo "<br><br>";
     # Sample read data menggunakan fitur limit
     # Select data pada 1 tabel
 */
-$sample_7 = $simple_crud->get_rows('users', ['limit' => ['limit' => 1]], 'array', TRUE);
+$sample_7 = $simple_crud->get_rows('users', [
+    'limit' => ['limit' => 1],
+    'return' => 'array',
+    'is_indexed' => TRUE
+]);
 var_dump($sample_7);
 echo "<br><br>";

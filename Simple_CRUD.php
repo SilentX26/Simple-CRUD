@@ -77,29 +77,33 @@ class Simple_CRUD
             $i = 0;
             foreach($condition as $key => $value) {
                 $is_not_escape = (isset($value['escape']) && $value['escape'] === FALSE);
+                $key = trim($key);
                 $value = (is_array($value)) ? $value['value'] : $value;
-
-                if(preg_match('/^[&&||!=]/', $key) != 0) {
-                    $logic = preg_match('/^[&&||]+/', $key, $array_logic);
-                    $logic = $array_logic[0];
+                
+                preg_match('/^(&&|\|\||)/m', $key, $logic);
+                if(isset($logic[0])) {
+                    $logic = trim($logic[0]);
+                    $key = preg_replace('/^(&&|\|\||)/m', '', $key);
                 } else {
                     $logic = '&&';
                 }
 
-                if(preg_match('/[><>=<=!=]$/', $key) != 0) {
-                    $opr = preg_match('/[><>=<=!=]+$/', $key, $array_opr);
-                    $opr = $array_opr[0];
+                preg_match('/([!=><>=<=]|like)+$/mi', $key, $opr);
+                if(isset($opr[0])) {
+                    $opr = trim($opr[0]);
+                    $key = preg_replace('/([!=><>=<=]|like)+$/mi', '', $key);
                 } else {
                     $opr = '=';
                 }
 
-                $key = preg_replace('/[^a-zA-Z0-9]+/m', '', $key);
-                $logic = ($i != 0) ? $logic : '';
-                $result .= ($is_not_escape !== FALSE) ? " {$logic} {$key} {$opr} {$value}" : " {$logic} {$key} {$opr} '{$value}'";
+                $result .= ($i > 0) ? " {$logic} " : ' ';
+                $result .= ($is_not_escape !== FALSE) ? "{$key} {$opr} {$value}" : "{$key} {$opr} '{$value}'";
 
                 $i++;
             }
 
+            var_dump($result);
+            die;
             return $result;
 
         } else {
@@ -115,7 +119,7 @@ class Simple_CRUD
     {
         $result = '';
 
-        if(isset($param['join'])) {
+        if(!empty($param['join'])) {
             if(isset($param['join'][0])) {
                 foreach($param['join'][0] as $key => $value) {
                     $on = (isset($value['on']))
@@ -132,23 +136,23 @@ class Simple_CRUD
             }
         }
 
-        if(isset($param['where']))
+        if(!empty($param['where']))
             $result .= ' WHERE ' . $this->_where($param['where']);
 
-        if(isset($param['group_by']))
+        if(!empty($param['group_by']))
             $result .= " GROUP BY {$param['group_by']}";
         
-        if(isset($param['order_by'])) {
+        if(!empty($param['order_by'])) {
             $type = (isset($param['order_by']['type']))
                 ? strtoupper($param['order_by']['type'])
                 : '';
             $result .= " ORDER BY {$param['order_by']['column']} {$type}";
         }
 
-        if(isset($param['limit']))
+        if(!empty($param['limit']))
             $result .= " LIMIT {$param['limit']}";
         
-        if(isset($param['offset']))
+        if(!empty($param['offset']))
             $result .= " OFFSET {$param['offset']}";
 
         return $result;

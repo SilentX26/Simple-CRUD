@@ -101,9 +101,7 @@ class Simple_CRUD
 
                 $i++;
             }
-
-            var_dump($result);
-            die;
+            
             return $result;
 
         } else {
